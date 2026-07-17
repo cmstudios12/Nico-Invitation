@@ -1,4 +1,4 @@
-# Let’s Dine — Complete Setup
+# Let’s Dine Complete Setup
 
 Main Supabase project used: `oykzaktjjmfdhcxzamzo`.
 
