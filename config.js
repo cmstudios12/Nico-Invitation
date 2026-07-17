@@ -1,0 +1,1 @@
+window.APP_CONFIG = { SUPABASE_URL: 'https://oykzaktjjmfdhcxzamzo.supabase.co', SUPABASE_ANON_KEY: 'sb_publishable_XLrj4H1HF7QkcySwo1CJFQ_rQVkSwzH', VERIFY_PAGE_URL: 'https://YOUR-DOMAIN.com/verify.html' };

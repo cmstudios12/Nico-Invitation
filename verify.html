@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="#080808">
+    <meta name="description" content="Verify a Let’s Dine guest invitation.">
+    <title>Invitation Verification — Let’s Dine</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --black: #080808;
+            --panel: #111;
+            --gold: #c8a363;
+            --gold-soft: #e5ca96;
+            --ivory: #f5f0e7;
+            --text: #f5f2ec;
+            --muted: #938d85;
+            --green: #55b984;
+            --red: #df7474;
+            --amber: #d5a34b;
+            --line: rgba(255, 255, 255, .1);
+            --shadow: 0 28px 90px rgba(0, 0, 0, .42);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            min-height: 100svh;
+            display: grid;
+            place-items: center;
+            padding: 28px 18px;
+            overflow-x: hidden;
+            background:
+                radial-gradient(circle at 20% 15%, rgba(200, 163, 99, .14), transparent 30%),
+                radial-gradient(circle at 85% 80%, rgba(200, 163, 99, .08), transparent 26%),
+                var(--black);
+            color: var(--text);
+            font-family: "Manrope", sans-serif;
+        }
+
+        .noise {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .025;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+        }
+
+        .shell {
+            position: relative;
+            z-index: 2;
+            width: min(760px, 100%);
+        }
+
+        .brand {
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-mark {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            border: 1px solid var(--gold);
+            border-radius: 50%;
+            color: var(--gold-soft);
+            font-family: "Cormorant Garamond", serif;
+            font-size: 24px;
+        }
+
+        .brand-copy strong {
+            display: block;
+            font-size: 10px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+        }
+
+        .brand-copy span {
+            display: block;
+            margin-top: 3px;
+            color: #716c66;
+            font-size: 8px;
+            letter-spacing: .09em;
+        }
+
+        .card {
+            overflow: hidden;
+            border: 1px solid rgba(200, 163, 99, .3);
+            background: #0e0e0e;
+            box-shadow: var(--shadow);
+        }
+
+        .hero {
+            position: relative;
+            padding: 34px 32px;
+            background:
+                radial-gradient(circle at 90% 0, rgba(200, 163, 99, .15), transparent 32%),
+                #101010;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .hero::after {
+            content: "N";
+            position: absolute;
+            right: 25px;
+            top: -55px;
+            color: rgba(255, 255, 255, .025);
+            font-family: "Cormorant Garamond", serif;
+            font-size: 200px;
+            line-height: 1;
+        }
+
+        .eyebrow {
+            position: relative;
+            z-index: 2;
+            color: var(--gold);
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            position: relative;
+            z-index: 2;
+            margin: 11px 0 6px;
+            font-family: "Cormorant Garamond", serif;
+            font-size: clamp(46px, 8vw, 72px);
+            line-height: .92;
+            font-weight: 600;
+        }
+
+        .hero p {
+            position: relative;
+            z-index: 2;
+            margin: 0;
+            color: #837d76;
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .body {
+            padding: 28px
+        }
+
+        .status {
+            min-height: 68px;
+            padding: 15px 17px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            border: 1px solid var(--line);
+            background: #151515;
+        }
+
+        .status-icon {
+            width: 42px;
+            height: 42px;
+            flex: 0 0 auto;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: #222;
+        }
+
+        .status-icon i {
+            width: 20px
+        }
+
+        .status strong {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 12px;
+        }
+
+        .status span {
+            display: block;
+            color: #7e7871;
+            font-size: 9px;
+            line-height: 1.5;
+        }
+
+        .status.approved {
+            border-color: rgba(85, 185, 132, .45);
+            background: rgba(85, 185, 132, .08);
+        }
+
+        .status.approved .status-icon {
+            background: rgba(85, 185, 132, .15);
+            color: #75d8a1
+        }
+
+        .status.pending {
+            border-color: rgba(213, 163, 75, .42);
+            background: rgba(213, 163, 75, .07);
+        }
+
+        .status.pending .status-icon {
+            background: rgba(213, 163, 75, .14);
+            color: #dfb866
+        }
+
+        .status.declined,
+        .status.invalid {
+            border-color: rgba(223, 116, 116, .42);
+            background: rgba(223, 116, 116, .07);
+        }
+
+        .status.declined .status-icon,
+        .status.invalid .status-icon {
+            background: rgba(223, 116, 116, .14);
+            color: #ef9999;
+        }
+
+        .loading .status-icon i {
+            animation: spin .8s linear infinite
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .guest-name {
+            margin: 26px 0 18px;
+            font-family: "Cormorant Garamond", serif;
+            font-size: 42px;
+            line-height: 1;
+            font-weight: 600;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: var(--line);
+            border: 1px solid var(--line);
+        }
+
+        .item {
+            min-height: 105px;
+            padding: 16px;
+            background: #131313;
+        }
+
+        .item.full {
+            grid-column: 1/-1
+        }
+
+        .item small {
+            display: block;
+            margin-bottom: 7px;
+            color: #6e6862;
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+        .item strong {
+            display: block;
+            color: #dfd9d1;
+            font-size: 11px;
+            line-height: 1.65;
+            word-break: break-word;
+        }
+
+        .event-note {
+            margin-top: 18px;
+            padding: 17px;
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            border: 1px solid rgba(200, 163, 99, .24);
+            background: #111;
+            color: #807a73;
+            font-size: 9px;
+            line-height: 1.65;
+        }
+
+        .event-note i {
+            flex: 0 0 auto;
+            width: 17px;
+            color: var(--gold);
+        }
+
+        .footer {
+            padding: 18px 25px;
+            background: #080808;
+            border-top: 1px solid var(--line);
+            text-align: center;
+            color: #625e59;
+            font-size: 8px;
+            line-height: 1.7;
+        }
+
+        .footer a {
+            color: var(--gold-soft);
+            text-decoration: none
+        }
+
+        @media(max-width:560px) {
+            body {
+                padding: 14px 10px
+            }
+
+            .hero {
+                padding: 27px 21px
+            }
+
+            .body {
+                padding: 20px
+            }
+
+            .grid {
+                grid-template-columns: 1fr
+            }
+
+            .item.full {
+                grid-column: auto
+            }
+
+            .guest-name {
+                font-size: 36px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="noise"></div>
+
+    <main class="shell">
+        <div class="brand">
+            <div class="brand-mark">N</div>
+            <div class="brand-copy">
+                <strong>Let’s Dine</strong>
+                <span>Nico’s Birthday Celebration</span>
+            </div>
+        </div>
+
+        <article class="card">
+            <header class="hero">
+                <div class="eyebrow">Secure guest verification</div>
+                <h1>Invitation status</h1>
+                <p>Scan result for the private celebration at The Capital Mbombela.</p>
+            </header>
+
+            <section class="body" id="output">
+                <div class="status pending loading">
+                    <div class="status-icon"><i data-lucide="loader-circle"></i></div>
+                    <div>
+                        <strong>Checking invitation…</strong>
+                        <span>Please wait while the QR token is verified securely.</span>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="footer">
+                Let’s Dine — 23 October 2026 · The Capital Mbombela<br>
+                Designed & developed by
+                <a href="https://cmstudio.online" target="_blank" rel="noopener">Creative Media Studios</a>
+            </footer>
+        </article>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+
+    <script>
+        lucide.createIcons();
+
+        const output = document.querySelector("#output");
+
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+        function clean(value, fallback = "Not provided") {
+            const text = String(value ?? "").trim();
+            return text || fallback;
+        }
+
+        function labelAttendance(value) {
+            if (value === "attending") return "Confirmed attending";
+            if (value === "not_attending") return "Unable to attend";
+            return clean(value, "Unknown");
+        }
+
+        function statusMarkup(type, title, message, icon) {
+            return `
+        <div class="status ${type}">
+          <div class="status-icon"><i data-lucide="${icon}"></i></div>
+          <div>
+            <strong>${escapeHtml(title)}</strong>
+            <span>${escapeHtml(message)}</span>
+          </div>
+        </div>
+      `;
+        }
+
+        function detail(label, value, full = false) {
+            return `
+        <div class="item ${full ? "full" : ""}">
+          <small>${escapeHtml(label)}</small>
+          <strong>${escapeHtml(clean(value))}</strong>
+        </div>
+      `;
+        }
+
+        async function verifyInvitation() {
+            const token = new URLSearchParams(window.location.search).get("token");
+
+            if (!token) {
+                output.innerHTML = statusMarkup(
+                    "invalid",
+                    "Invalid invitation link",
+                    "This verification link does not contain a QR token.",
+                    "circle-x"
+                );
+                lucide.createIcons();
+                return;
+            }
+
+            if (!window.APP_CONFIG?.SUPABASE_URL || !window.APP_CONFIG?.SUPABASE_ANON_KEY) {
+                output.innerHTML = statusMarkup(
+                    "invalid",
+                    "Website configuration error",
+                    "The verification page could not connect to Supabase.",
+                    "triangle-alert"
+                );
+                lucide.createIcons();
+                return;
+            }
+
+            const db = supabase.createClient(
+                APP_CONFIG.SUPABASE_URL,
+                APP_CONFIG.SUPABASE_ANON_KEY
+            );
+
+            try {
+                const { data, error } = await db.rpc("verify_rsvp", {
+                    p_token: token
+                });
+
+                if (error) throw error;
+
+                const guest = Array.isArray(data) ? data[0] : data;
+
+                if (!guest) {
+                    throw new Error("No matching invitation was found.");
+                }
+
+                const approval = guest.approval_status || "pending";
+                const isApproved = approval === "approved";
+                const isDeclined =
+                    approval === "declined" ||
+                    guest.attendance === "not_attending";
+
+                let statusType = "pending";
+                let statusTitle = "RSVP received — approval pending";
+                let statusMessage =
+                    "The invitation exists, but the organiser has not marked it as approved yet.";
+                let icon = "clock-3";
+
+                if (isApproved && guest.attendance === "attending") {
+                    statusType = "approved";
+                    statusTitle = "Verified invited guest";
+                    statusMessage =
+                        "This QR code is valid and belongs to a confirmed guest.";
+                    icon = "badge-check";
+                } else if (isDeclined) {
+                    statusType = "declined";
+                    statusTitle = "Guest is not attending";
+                    statusMessage =
+                        "This RSVP is valid, but the guest indicated that they cannot attend.";
+                    icon = "user-x";
+                }
+
+                output.innerHTML = `
+          ${statusMarkup(statusType, statusTitle, statusMessage, icon)}
+
+          <h2 class="guest-name">${escapeHtml(clean(guest.full_name, "Guest"))}</h2>
+
+          <div class="grid">
+            ${detail("Attendance", labelAttendance(guest.attendance))}
+            ${detail("Approval status", clean(approval))}
+            ${detail("Food choice", guest.food_choice)}
+            ${detail("Drink choice", guest.drink_choice)}
+            ${detail("Wine preference", guest.wine_preference)}
+            ${detail(
+                    "Plus one",
+                    guest.plus_one
+                        ? clean(guest.plus_one_name, "Yes")
+                        : "No"
+                )}
+            ${detail("Dietary requirements", guest.dietary_requirements, true)}
+            ${detail("Event date", "23 October 2026")}
+            ${detail("Venue", "The Capital Mbombela")}
+          </div>
+
+          <div class="event-note">
+            <i data-lucide="shield-check"></i>
+            <span>
+              This page intentionally shows only event-relevant guest information.
+              Contact details and private messages are not exposed through QR verification.
+            </span>
+          </div>
+        `;
+
+                lucide.createIcons();
+            } catch (error) {
+                console.error("Verification error:", error);
+
+                output.innerHTML = statusMarkup(
+                    "invalid",
+                    "Invitation not recognised",
+                    "This QR code is invalid, expired or no longer linked to an RSVP.",
+                    "shield-x"
+                );
+
+                lucide.createIcons();
+            }
+        }
+
+        verifyInvitation();
+    </script>
+</body>
+
+</html>
